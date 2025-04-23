@@ -1,21 +1,16 @@
-import express from 'express';
-import cors from 'cors';
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
+
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-let medicines = [];
+const authRoutes = require('./routes/create_acount');
+app.use('/api/auth', authRoutes);
 
-app.post('/api/medicines', (req, res) => {
-  const newMedicine = {
-    id: Date.now(),
-    name: req.body.name
-  };
-  medicines.push(newMedicine);
-  res.status(201).json(newMedicine);
-});
-
-app.listen(3000, () => {
-  console.log('Backend running at http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server is running on port ${PORT}`);
 });

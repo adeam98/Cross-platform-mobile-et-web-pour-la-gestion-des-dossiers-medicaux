@@ -1,10 +1,14 @@
 
 const express = require('express');
-const router = express.Router();
-const {createacount,modifierinformation,deleteAccount,login} = require('../controllers/auto/account');
 
-router.post('/create', createacount);
-router.put('/:id', modifierinformation); 
-router.delete('/:id', deleteAccount);
+const router = express.Router();
+
+const {createAccount,modifyInformation,login} = require('../controllers/auto/account');
+
+router.post('/create', createAccount);
+
+router.put('/:id', modifyInformation);
+ 
 router.post('/login', login);
+
 module.exports = router;

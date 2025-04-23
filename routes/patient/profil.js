@@ -2,5 +2,5 @@ const express = require('express');
 const router = express.Router();
 const { getProfil } = require('../../controllers/patient/profil');
 
-router.get('/:id', getProfil);  
+router.get('/:id_user', getProfil);  
 module.exports = router;
