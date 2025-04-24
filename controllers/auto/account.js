@@ -1,14 +1,9 @@
 const pool = require('../config/db'); 
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt'); /* responsable de hachage des mot de passe pour qu'il soient stocke d'une maniere chiffrée avec bcrypt.hash et il peut compare un mot de passe donnée avec qui sont stocke par hash.compare  */
 const jwt = require('jsonwebtoken');
-const saltRounds = 10;
+const saltRounds = 10; /* c'est le nombre de fois que l'algo de hashage de bcrypt sera utiliser pour generer une chaine aletoire et ce pour renforcer la securite !Atention d'augumenter ce nombre il va rendre ce process (le hashage ) plus lent! */
 const createAccount = async (req, res) => {
   const { email, password, role, nom, prenom, cin, telephone, adresse, specialite } = req.body;
-
-  
-  if (!email || !password || !role || !nom || !prenom || !cin) {
-      return res.status(400).json({ message: "Please provide all required fields" });
-  }
 
   if (role !== 'patient' && role !== 'medcin') {
       return res.status(400).json({ message: "Invalid role" });
@@ -118,26 +113,19 @@ const modifyInformation = async (req, res) => {
   }
 };
 
-//const deleteAccount = (req, res) => {
-   // const userId = parseInt(req.params.id);
-   // const userIndex = users.findIndex(user => user.id === userId);
-   // if (userIndex === -1) {
-    //    return res.status(404).json({ message: "User not found" });
-   // }
-    //users.splice(userIndex, 1);
-    //res.status(200).json({ message: "Account deleted successfully" });
-//}
-const pool = require('../config/db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+/* const deleteAccount = (req, res) => {
+    const userId = parseInt(req.params.id);
+    const userIndex = users.findIndex(user => user.id === userId);
+    if (userIndex === -1) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    users.splice(userIndex, 1);
+    res.status(200).json({ message: "Account deleted successfully" });
+*/}
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Please provide email and password" });
-  }
-
   try {
     const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
@@ -149,7 +137,7 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.mot_de_passe);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid email or password" }); /* res est responsable d'envoyer une reponse http au client et json est le format des donées envoyé */
     }
 
     const token = jwt.sign(
@@ -163,7 +151,7 @@ const login = async (req, res) => {
         email: user.email,
         role: user.role
       }
-    });
+    });/* utiliser pour securiser l'echange entre le client et le serveur via les donnée envoyé avec ce token a chaque demande au serveur */
 
   } catch (error) {
     console.error("Login error:", error);
