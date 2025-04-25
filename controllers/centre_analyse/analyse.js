@@ -1,31 +1,23 @@
 const pool = require('../config/db'); 
 
 const AddAnalyse = async (req, res) => {
-    const {
-        id_user,
-        nom,
-        description,
-        etat,
-        resultat,
-        date_examen,
-        nom_centre_analyse
-    } = req.body;
+    const { id_user, nom, description, etat, resultat, date_examen, nom_centre_analyse } = req.body;
 
     if (!id_user || !nom || !description || !resultat || !date_examen || !nom_centre_analyse) {
         return res.status(400).json({ message: "All fields are required" });
     }
-    if(etat==1&&resultat==null){   
+    if(etat==1 && resultat==null){   
         return res.status(400).json({ message: "resultat is required" }); 
     }
-    if(etat==0&&resultat!=null){   
+    if(etat==0 && resultat!=null){   
         return res.status(400).json({ message: "etat is required" }); 
     }
-    if (etat !== 0 && etat !== 1) {
+    if (etat!==0 && etat!==1) {
         return res.status(400).json({ message: "etat must be 0 or 1" });
     }
     try {
         const userCheck = await pool.query('SELECT * FROM patients WHERE id_user = $1', [id_user]);
-        if (userCheck.rows.length === 0) {
+        if (userCheck.rows.length===0) {
             return res.status(404).json({ message: "Patient not found" });
         }
 
@@ -42,7 +34,7 @@ const AddAnalyse = async (req, res) => {
     }
 };
 
-const getAnalyseById = async (req, res) => {
+/*const getAnalyseById = async (req, res) => {
     const {id_user,id_analyse} = req.params;
     if (!id_user || !id_analyse) {
         return res.status(400).json({ message: "All fields are required" });
@@ -68,9 +60,9 @@ const getAnalyseById = async (req, res) => {
         console.error("Error fetching analyse:", error);
         res.status(500).json({ message: "Server error" });
     }
-}
+}*/
 
-const updateAnalyse = async (req, res) => {
+/*const updateAnalyse = async (req, res) => {
 
     const { id_user, id_analyse } = req.params;
     const { nom, description, etat, resultat, date_examen, nom_centre_analyse } = req.body;
@@ -116,8 +108,8 @@ const updateAnalyse = async (req, res) => {
         console.error("Error updating analyse:", error);
         res.status(500).json({ message: "Server error", error });
     }
-}; 
-const getAllAnalyse = async (req, res) => {
+}; */
+/*const getAllAnalyse = async (req, res) => {
     const userId = parseInt(req.params.id);
     try {
         const check = await pool.query('SELECT * FROM patients where id_user = $1',[userId])
@@ -135,8 +127,8 @@ const getAllAnalyse = async (req, res) => {
     }
     res.status(200).json(result.rows);
 
-}
-const getAnalyseByEtat = async (req, res) => {
+}*/
+/*const getAnalyseByEtat = async (req, res) => {
    const {id_user,etat} = req.params;
  if (etat !== 0 && etat !== 1) {
           return res.status(400).json({ message: "etat must be 0 or 1" });
@@ -162,14 +154,7 @@ const getAnalyseByEtat = async (req, res) => {
      console.error("Error fetching analyse:", error);
      res.status(500).json({ message: "Server error" });
     }
-}
+}*/
 
-module.exports = {
-    AddAnalyse,
-    getAnalyseById,
-    getAllAnalyse,
-    getAnalyseByEtat,
-    updateAnalyse
-}
-
+module.exports = { AddAnalyse /* getAnalyseById, getAllAnalyse, getAnalyseByEtat, updateAnalyse */ }
 
