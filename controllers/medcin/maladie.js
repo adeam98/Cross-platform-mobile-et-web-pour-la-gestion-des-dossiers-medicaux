@@ -55,7 +55,7 @@ const getMaladies = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 }
-const getMaladie = async (req, res) => {
+/*const getMaladie = async (req, res) => {
    const { id_user, id_maladie } = req.params;
     if (!id_user || !id_maladie) {
         return res.status(400).json({ message: "All fields are required" });
@@ -81,7 +81,7 @@ const getMaladie = async (req, res) => {
         console.error("Error getting maladie:", error);
         res.status(500).json({ message: "Server error", error });
     }
-}
+}*/
 const updateMaladie = async (req, res) => {
     const { id_user, id_maladie } = req.params;
     const { nom, description } = req.body;
@@ -149,7 +149,7 @@ const deleteMaladie = async (req, res) => {
 module.exports = {
     addmaladie,
     getMaladies,
-    getMaladie,
+    //getMaladie,
     updateMaladie,
     deleteMaladie
 }
