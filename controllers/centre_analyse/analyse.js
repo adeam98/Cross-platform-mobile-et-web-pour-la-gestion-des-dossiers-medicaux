@@ -1,37 +1,25 @@
 const pool = require('../config/db'); 
 
 const AddAnalyse = async (req, res) => {
-    const { id_user, nom, description, etat, resultat, date_examen, nom_centre_analyse } = req.body;
+   const {idc}= req.params;
+   const {id_analyse,result,date_exam}=req.body;
 
-    if (!id_user || !nom || !description || !resultat || !date_examen || !nom_centre_analyse) {
-        return res.status(400).json({ message: "All fields are required" });
-    }
-    if(etat==1 && resultat==null){   
-        return res.status(400).json({ message: "resultat is required" }); 
-    }
-    if(etat==0 && resultat!=null){   
-        return res.status(400).json({ message: "etat is required" }); 
-    }
-    if (etat!==0 && etat!==1) {
-        return res.status(400).json({ message: "etat must be 0 or 1" });
-    }
-    try {
-        const userCheck = await pool.query('SELECT * FROM patients WHERE id_user = $1', [id_user]);
-        if (userCheck.rows.length===0) {
-            return res.status(404).json({ message: "Patient not found" });
-        }
+   try {
+    const check = await pool.query('SELECT *FROM centres_analyses WHERE id_user=$1',[idc]);
 
-        const result = await pool.query(
-            `INSERT INTO analyses (id_user, nom, description, etat, resultat, date_examen, nom_centre_analyse)
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-            [id_user, nom, description, etat, resultat, date_examen, nom_centre_analyse]
-        );
-
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        console.error("Error adding analyse:", error);
-        res.status(500).json({ message: "Server error", error });
+    if(check.rows.length==0)
+    {
+       return  res.status(404).json({message: 'user not found'});
     }
+    const me =check.nom;
+     await pool.query('INSERT INTO analyses(resultat,date_examen,nom_centre_analyse,etat) VALUES ($1,$2,$3,1) WHERE id_analyse= $4',[result,date_exam,me.nom,id_analyse])
+     res.status(200).json({message:'analyse add successfully'});
+   }
+   catch(err)
+   {
+    console.error("Error adding analyse:", err);
+     res.status(500).json({ message: "Server error", err });
+   }
 };
 
 /*const getAnalyseById = async (req, res) => {
