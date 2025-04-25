@@ -26,7 +26,7 @@ const AddConsultation = async (req, res) => {
     }
 };
 
-const getConsultationById = async (req, res) => {
+/*const getConsultationById = async (req, res) => {
    const {id_user,id_consultation} = req.params;
     if (!id_user || !id_consultation) {
         return res.status(400).json({ message: "All fields are required" });
@@ -51,7 +51,7 @@ const getConsultationById = async (req, res) => {
         console.error("Error getting consultation:", error);
         res.status(500).json({ message: "Server error", error });
     }
-}
+}*/
 const getAllConsultations = async (req, res) => {
     const {id_user} = req.params;
     if (!id_user) {
@@ -114,7 +114,7 @@ const updateConsultation = async (req, res) => {
 
 module.exports = {
     AddConsultation,
-    getConsultationById,
+    //getConsultationById,
     getAllConsultations,
     updateConsultation
 }
