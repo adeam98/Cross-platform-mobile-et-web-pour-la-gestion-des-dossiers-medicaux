@@ -1,7 +1,7 @@
 
 const pool = require('../config/db'); // assuming you've set up your db.js correctly
 
-const getConsultation = async (req, res) => {
+/*const getConsultation = async (req, res) => {
     const { id_user, id_consultation } = req.params;
 
     try {
@@ -23,7 +23,7 @@ const getConsultation = async (req, res) => {
         console.error("Error fetching consultation:", error);
         res.status(500).json({ message: "Server error" });
     }
-}
+}*/
 
 const getALLconsultation = async (req, res) => {
     const { id_user } = req.params;
@@ -51,6 +51,6 @@ const getALLconsultation = async (req, res) => {
 }
 
 module.exports = {
-    getConsultation,
+    //getConsultation,
     getALLconsultation
 };
