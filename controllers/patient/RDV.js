@@ -14,7 +14,7 @@ const getAllRDV = (req, res) => {
         res.status(200).json(results.rows);
     });
 };
-const getRDVById = async (req, res) => {
+/*const getRDVById = async (req, res) => {
     const { id_user, id_rdv } = req.params;
 
     pool.query('SELECT * FROM rdvs WHERE id_rdv = $1 AND id_user = $2', [id_rdv, id_user], (error, results) => {
@@ -27,10 +27,9 @@ const getRDVById = async (req, res) => {
         }
         res.status(200).json(results.rows[0]);
     });
-}
+}*/
 
 module.exports = {
     getAllRDV,
-    getRDVById
+    //getRDVById
 };
-
