@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-jsx",
+    "moduleResolution": "bundler",        // 🔥 Add this line
 
     "baseUrl": ".",
     "paths": {
