@@ -1,7 +1,9 @@
 const pool = require('../../config/db'); // assuming you've set up your db.js correctly
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const getAnalyse = async (req, res) => {
+
+
+/* const getAnalyse = async (req, res) => {
     const { id_user, id_analyse } = req.params;
     try {
        const userCheck = await pool.query('SELECT * FROM users WHERE id_user = $1', [id_user]); 
@@ -22,7 +24,7 @@ const getAnalyse = async (req, res) => {
       console.error("Error fetching analyse:", error);
       res.status(500).json({ message: "Server error" });
     }
-  };
+  };  */
   const getALLAnalyse = async (req, res) => {
     const { id_user } = req.params;
   
@@ -73,7 +75,13 @@ const getAnalyseByEtat = async (req, res) => {
 
 
 module.exports = {
+<<<<<<< HEAD
     getAnalyse,
     getALLAnalyse,
     getAnalyseByEtat
 }
+=======
+    //getAnalyse,
+    getALLAnalyse
+}
+>>>>>>> f2723cf90180971392ddadadeb267444bda532b0

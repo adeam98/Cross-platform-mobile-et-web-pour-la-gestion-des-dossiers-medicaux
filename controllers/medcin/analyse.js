@@ -35,4 +35,8 @@ const AddAnalyse = async (req, res) => {
 
 module.exports = {
     AddAnalyse
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f2723cf90180971392ddadadeb267444bda532b0

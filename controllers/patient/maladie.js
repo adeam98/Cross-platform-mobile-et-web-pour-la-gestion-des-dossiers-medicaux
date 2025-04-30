@@ -3,7 +3,7 @@ const pool = require('../../config/db');
 const getmaladie = async (req, res) => {
    const { id_user } = req.params;
     try {
-        const userCheck = await pool.query('SELECT * FROM users WHERE id_user = $1', [id_user]);
+       const userCheck = await pool.query('SELECT * FROM users WHERE id_user = $1', [id_user]);
         if (userCheck.rows.length === 0) {
             return res.status(404).json({ message: "User not found" });
         }

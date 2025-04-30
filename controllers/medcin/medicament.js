@@ -1,6 +1,6 @@
 const pool = require('../config/db'); 
 
-const getmedicament = async (req, res) => {
+/*const getmedicament = async (req, res) => {
     const {id_user, id_medicament} = req.params;
     if (!id_user || !id_medicament) {
         return res.status(400).json({ message: "All fields are required" });
@@ -28,7 +28,7 @@ const getmedicament = async (req, res) => {
         console.error("Error fetching medicament:", error);
         res.status(500).json({ message: "Server error" });
     }
-}
+}*/
 const updatemedicament = async (req, res) => {
    const { id_user, id_medicament } = req.params;
    
@@ -141,7 +141,7 @@ const getAllmedicament = async (req, res) => {
     }
 }
 module.exports = {
-    getmedicament,
+    //getmedicament,
     updatemedicament,
     deletemedicament,
     addmedicament,
