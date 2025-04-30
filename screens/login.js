@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useRef } from 'react';
 import {
@@ -49,8 +50,8 @@ const LoginScreen = () => {
 
       const data = res.data;
       console.log('Login successful:', data);
-
-      Alert.alert('Succès', 'Connexion réussie');
+      await AsyncStorage.setItem('userId', data.user.id_user.toString()); // convert to string
+      await AsyncStorage.setItem('userToken', data.token);
       navigation.navigate('Home');
     } catch (error) {
       console.error('Erreur lors de la connexion :', error);

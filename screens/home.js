@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { View, ScrollView, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-const AcceuilScreen = () => {
+const AcceuilScreen = ({ navigation }) => {
   return (
     <View style={Styles.container}>
       <ScrollView>
@@ -11,22 +11,40 @@ const AcceuilScreen = () => {
           <Text style={Styles.souslogo}>Votre santé, notre engagement</Text>
         </View>
         <View style={Styles.content}>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            onPress={() => navigation.navigate('Rdv')}
+            activeOpacity={0.7}>
             <Text style={Styles.text}>CONSULTER RDV</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Maladie')}>
             <Text style={Styles.text}>Consulter les maladies enregistrées</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Consultation')}>
             <Text style={Styles.text}>Consulter les rapports de consultation</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('Analyser')}>
             <Text style={Styles.text}>Consulter les résultats d'analyse</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            onPress={() => navigation.navigate('Analysep')}
+            activeOpacity={0.7}>
             <Text style={Styles.text}>Consulter les analyses prescrites</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Styles.button} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={Styles.button}
+            onPress={() => navigation.navigate('Medicament')}
+            activeOpacity={0.7}>
             <Text style={Styles.text}>Consulter les médicaments prescrits</Text>
           </TouchableOpacity>
         </View>

@@ -11,6 +11,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-picker/picker": "2.9.0",
     "@react-navigation/bottom-tabs": "^7.3.9",
     "@react-navigation/native": "^7.1.6",
@@ -18,6 +19,7 @@
     "@react-navigation/stack": "^7.2.10",
     "axios": "^1.9.0",
     "expo": "^52.0.44",
+    "expo-dev-client": "~5.0.20",
     "expo-linear-gradient": "~14.0.2",
     "expo-router": "^4.0.20",
     "expo-status-bar": "~2.0.1",
@@ -32,8 +34,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-svg": "15.8.0",
     "react-native-toast-message": "^2.1.5",
-    "react-native-vector-icons": "^10.2.0",
-    "expo-dev-client": "~5.0.20"
+    "react-native-vector-icons": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
