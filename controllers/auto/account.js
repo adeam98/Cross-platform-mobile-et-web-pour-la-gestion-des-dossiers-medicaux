@@ -1,95 +1,75 @@
-const pool = require('../config/db'); 
+const pool = require('../../config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
 const createAccount = async (req, res) => {
   const { email, password, role, nom, prenom, cin, telephone, adresse, specialite } = req.body;
 
-  
-  if (!email || !password || !role || !nom || !prenom || !cin) {
-      return res.status(400).json({ message: "Please provide all required fields" });
+  if (!email || !password|| !nom || !prenom || !cin) {
+    return res.status(400).json({ message: "Please provide all required fields" });
   }
 
   if (role !== 'patient' && role !== 'medcin') {
-      return res.status(400).json({ message: "Invalid role" });
+    return res.status(400).json({ message: "Invalid role" });
   }
 
   try {
-      const emailQuery = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (emailQuery.rows.length > 0) {
-          return res.status(400).json({ message: "Email already in use" });
-      }
+    // Check if email exists
+    const emailQuery = await pool.query('SELECT * FROM patients WHERE email = $1', [email]);
+const cinQuery = await pool.query('SELECT * FROM patients WHERE cin = $1', [cin]);
 
-      // Step 3: Hash the password
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
+if (emailQuery.rows.length > 0) {
+  return res.status(400).json({ message: "Email already in use" });
+}
 
-      // Step 4: Create the user in the `users` table
-      const userQuery = await pool.query(
-          'INSERT INTO users (email, mot_de_passe, role) VALUES ($1, $2, $3) RETURNING id_user',
-          [email, hashedPassword, role]
+if (cinQuery.rows.length > 0) {
+  return res.status(400).json({ message: "CIN already in use" });
+}
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    let userId;
+
+    if (role === 'patient') {
+      const patientQuery = await pool.query(
+        `INSERT INTO patients (email, mot_de_passe, role, nom, prenom, cin, telephone, adresse)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id_user`,
+        [email, hashedPassword, role, nom, prenom, cin, telephone, adresse]
       );
+      userId = patientQuery.rows[0].id_user;
+    } 
+    else if (role === 'medcin') {
+      const medcinQuery = await pool.query(
+        `INSERT INTO medcins (email, mot_de_passe, role, nom, prenom, cin, telephone, adresse, specialite)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING id_user`,
+        [email, hashedPassword, role, nom, prenom, cin, telephone, adresse, specialite]
+      );
+      userId = medcinQuery.rows[0].id_user;
+    }
 
-      const userId = userQuery.rows[0].id_user;
+    const token = jwt.sign({ id: userId, role: role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-     
-      if (role === 'patient') {
-        try{
-          const patientQuery = await pool.query(
-              'INSERT INTO patients (id_user, email, mot_de_passe, role, nom, prenom, cin, telephone, adresse) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-              [userId, email, hashedPassword, role, nom, prenom, cin, telephone, adresse]
-          );
-          
-          if(patientQuery.rowCount === 0) {
-              return res.status(500).json({ message: "Error creating patient" });
-          }
-        }catch(err)
-        {
-          console.error(err);
-          return res.status(500).json({ message: "Error creating patient" });
-        }
-      }
-      else if (role === 'medcin') {
-          
-        try{
-          const medcinQuery = await pool.query(
-              'INSERT INTO medcins (id_user, email, mot_de_passe, role, nom, prenom, cin, telephone, adresse, specialite) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
-              [userId, email, hashedPassword, role, nom, prenom, cin, telephone, adresse, specialite]
-          );
-          if(medcinQuery.rowCount === 0) {
-              return res.status(500).json({ message: "Error creating medcin" });
-          }
-        }catch(err)
-        {
-          console.error(err);
-          return res.status(500).json({ message: "Error creating medcin" });
-        }
-
-      }
-
-      // Step 6: Generate JWT token
-      const token = jwt.sign({ id: userId, role: role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-      res.status(201).json({ message: "Account created successfully", token });
+    res.status(201).json({ message: "Account created successfully", token });
 
   } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: "Error creating user" });
+    console.error(err);
+    res.status(500).json({ message: "Error creating user" });
   }
 };
+
 const modifyInformation = async (req, res) => {
   const userId = parseInt(req.params.id); 
   
-  // Check if the user exists in the database
   const userQuery = await pool.query('SELECT * FROM users WHERE id_user = $1', [userId]);
   
   if (userQuery.rowCount === 0) {
     return res.status(404).json({ message: "User not found" });
   }
 
-  // Get the updated information from the request body
   const { name, birthdate, address, email, password } = req.body;
 
-  // Prepare the update query
   const updateQuery = `UPDATE users SET email = $1, mot_de_passe = $2, name = $3, birthdate = $4, address = $5 WHERE id_user = $6 RETURNING id_user;`;
 
   try {
@@ -127,10 +107,6 @@ const modifyInformation = async (req, res) => {
     //users.splice(userIndex, 1);
     //res.status(200).json({ message: "Account deleted successfully" });
 //}
-const pool = require('../config/db');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-
 const login = async (req, res) => {
   const { email, password } = req.body;
 

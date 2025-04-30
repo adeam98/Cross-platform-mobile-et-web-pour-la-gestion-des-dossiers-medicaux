@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getAnalyse ,getALLAnalyse } = require('../../controllers/patient/analyse');
-router.get('/:id', getAnalyse); 
-router.get('/all/:id', getALLAnalyse);
+const { getAnalyseByEtat } = require('../../controllers/patient/analyse');
+
+router.get('/analyse/:id_user/:etat', getAnalyseByEtat);
+
 module.exports = router;

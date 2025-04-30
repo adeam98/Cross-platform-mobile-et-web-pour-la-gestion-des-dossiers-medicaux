@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const {AddConsultation, getConsultationById, getAllConsultations, updateConsultation} = require('../../controllers/medcin/consultation');
+const { AddConsultation, getConsultationById, getAllConsultations, updateConsultation } = require('../../controllers/medcin/consultation');
 
-router.post('/', AddConsultation);
-router.get('/:id', getConsultationById);
-router.get('/', getAllConsultations);
-router.put('/:id', updateConsultation);
+router.post('/consultations', AddConsultation);
+
+router.get('/consultations', getAllConsultations);
+
+router.get('/consultations/:id', getConsultationById);
+
+router.put('/consultations/:id', updateConsultation);
+
 module.exports = router;

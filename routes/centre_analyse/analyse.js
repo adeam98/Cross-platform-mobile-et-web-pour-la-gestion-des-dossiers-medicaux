@@ -1,10 +1,16 @@
 const express = require('express');
+const { getAnalyse, getAnalyseById, createAnalyse, updateAnalyse, getAnalyseByEtat } = require('../../controllers/centre_analyse/analyse');
+
 const router = express.Router();
 
-const {getAnalyse, getAnalyseById, createAnalyse, updateAnalyse,getAnalyseByEtat} = require('../../controllers/centre_analyse/analyse');
-router.get('/', getAnalyse);
-router.get('/:id', getAnalyseById);
-router.post('/', createAnalyse);
-router.put('/:id', updateAnalyse);
-router.get('/etat/:id/:etat', getAnalyseByEtat);
+router.get('/analyses', getAnalyse);
+
+router.get('/analyses/:id', getAnalyseById);
+
+router.post('/analyses', createAnalyse);
+
+router.put('/analyses/:id', updateAnalyse);
+
+router.get('/analyses/etat/:etat', getAnalyseByEtat);
+
 module.exports = router;

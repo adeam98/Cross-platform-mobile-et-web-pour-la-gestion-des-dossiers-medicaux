@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getConsultation, getALLconsultation} = require('../../controllers/patient/consultation');
-router.get('/:id', getConsultation);
-router.get('/all/:id', getALLconsultation);
+const { getALLconsultation} = require('../../controllers/patient/consultation');
+router.get('/consultation/:id_user', getALLconsultation);
 
 module.exports = router;

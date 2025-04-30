@@ -1,3 +1,4 @@
+
 const addRDV = async (req, res) => {
    const {idu,hopitale,date}=req.body;
 
@@ -14,11 +15,11 @@ const addRDV = async (req, res) => {
     }
     await Pool.query('INSERT INTO rdvs(date,hopital,id_user) VALUES($1,$2,$3)',[date,hopitale,idu]);
 
-     return res.status(200).json({message:"medicament add succefully"});
+     return res.status(200).json({message:"RDV add succefully"});
    }
    catch(err)
    {
-    console.error("Error adding medicament:", err);
+    console.error("Error adding RDV:", err);
     res.status(500).json({ message: "Server error" });
    }
 }
@@ -87,7 +88,7 @@ const deleteRDV = async (req, res) => {
         }
         res.status(200).json({message:"rdv deleted successfully"});
     } catch(err) {
-        console.error("Error deleting medicament:", err);
+        console.error("Error deleting rdv:", err);
         res.status(500).json({ message: "Server error" });
     }
 }
@@ -110,7 +111,7 @@ const getAllRDVs = async (req, res) => {
         }
         res.status(200).json(result.rows);
     } catch(err) {
-        console.error("Error getting medicament:", err);
+        console.error("Error getting rdv:", err);
         res.status(500).json({ message: "Server error" });
     }
 }

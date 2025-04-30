@@ -151,5 +151,5 @@ module.exports = {
     getMaladies,
     getMaladie,
     updateMaladie,
-    deleteMaladie
+    deleteMaladie 
 }

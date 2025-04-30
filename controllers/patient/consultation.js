@@ -1,5 +1,5 @@
 
-const pool = require('../config/db'); // assuming you've set up your db.js correctly
+const pool = require('../../config/db'); // assuming you've set up your db.js correctly
 
 const getConsultation = async (req, res) => {
     const { id_user, id_consultation } = req.params;
@@ -51,6 +51,5 @@ const getALLconsultation = async (req, res) => {
 }
 
 module.exports = {
-    getConsultation,
     getALLconsultation
 };

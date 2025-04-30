@@ -1,4 +1,4 @@
-const pool = require('../config/db'); 
+const pool = require('../../config/db'); 
 
 const getAllRDV = (req, res) => {
    const { id_user } = req.params;

@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { createRDV, getRDVById, updateRDV, deleteRDV } = require('../../controllers/medcin/RDV');
 
-router.post('/', createRDV);
-router.get('/:id', getRDVById);
-router.put('/:id', updateRDV);
-router.delete('/:id', deleteRDV);
+router.post('/RDV', createRDV);
+router.get('/RDV/:id', getRDVById);
+router.put('/RDV/:id', updateRDV);
+router.delete('/RDV/:id', deleteRDV);
 module.exports = router;

@@ -7,7 +7,7 @@ const {createAccount,modifyInformation,login} = require('../controllers/auto/acc
 
 router.post('/create', createAccount);
 
-router.put('/:id', modifyInformation);
+router.put('/modify/:id', modifyInformation);
  
 router.post('/login', login);
 

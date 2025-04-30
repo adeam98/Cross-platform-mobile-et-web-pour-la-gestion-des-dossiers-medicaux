@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {getmaladie, getMaladieById, createMaladie, updateMaladie, deleteMaladie} = require('../controllers/medcin/maladie');
 
-router.get('/', getmaladie);
-router.get('/:id', getMaladieById);
-router.post('/', createMaladie);
-router.put('/:id', updateMaladie);
-router.delete('/:id', deleteMaladie);
+router.get('/maladie', getmaladie);
+router.get('/maladie/:id', getMaladieById);
+router.post('/maladie', createMaladie);
+router.put('/maladie/:id', updateMaladie);
+router.delete('/maladie/:id', deleteMaladie);

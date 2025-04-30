@@ -6,7 +6,6 @@ const AddConsultation = async (req, res) => {
     if (!id_user || !date || !time || !rapport) {
         return res.status(400).json({ message: "All fields are required" });
     }
-
     try {
         const userCheck = await pool.query('SELECT * FROM patients WHERE id_user = $1', [id_user]);
         if (userCheck.rows.length === 0) {
