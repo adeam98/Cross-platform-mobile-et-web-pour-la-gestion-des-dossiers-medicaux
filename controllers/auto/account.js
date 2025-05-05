@@ -1,30 +1,27 @@
-<<<<<<< HEAD
+
 const pool = require('../../config/db');
-const bcrypt = require('bcrypt');
-=======
-const pool = require('../config/db'); 
-const bcrypt = require('bcrypt'); /* responsable de hachage des mot de passe pour qu'il soient stocke d'une maniere chiffrée avec bcrypt.hash et il peut compare un mot de passe donnée avec qui sont stocke par hash.compare  */
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
+const bcrypt = require('bcrypt'); 
 const jwt = require('jsonwebtoken');
-const saltRounds = 10; /* c'est le nombre de fois que l'algo de hashage de bcrypt sera utiliser pour generer une chaine aletoire et ce pour renforcer la securite !Atention d'augumenter ce nombre il va rendre ce process (le hashage ) plus lent! */
+const saltRounds = 10;
 const createAccount = async (req, res) => {
   const { email, password, role, nom, prenom, cin, telephone, adresse, specialite } = req.body;
 
-<<<<<<< HEAD
   if (!email || !password|| !nom || !prenom || !cin) {
     return res.status(400).json({ message: "Please provide all required fields" });
   }
-
-=======
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
   if (role !== 'patient' && role !== 'medcin') {
     return res.status(400).json({ message: "Invalid role" });
   }
 
   try {
-    // Check if email exists
-    const emailQuery = await pool.query('SELECT * FROM patients WHERE email = $1', [email]);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    let userId;
+
+    if (role === 'patient') {
+      const emailQuery = await pool.query('SELECT * FROM patients WHERE email = $1', [email]);
 const cinQuery = await pool.query('SELECT * FROM patients WHERE cin = $1', [cin]);
+
 
 if (emailQuery.rows.length > 0) {
   return res.status(400).json({ message: "Email already in use" });
@@ -33,12 +30,6 @@ if (emailQuery.rows.length > 0) {
 if (cinQuery.rows.length > 0) {
   return res.status(400).json({ message: "CIN already in use" });
 }
-
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    let userId;
-
-    if (role === 'patient') {
       const patientQuery = await pool.query(
         `INSERT INTO patients (email, mot_de_passe, role, nom, prenom, cin, telephone, adresse)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -48,6 +39,17 @@ if (cinQuery.rows.length > 0) {
       userId = patientQuery.rows[0].id_user;
     } 
     else if (role === 'medcin') {
+      const emailQuery = await pool.query('SELECT * FROM patients WHERE email = $1', [email]);
+const cinQuery = await pool.query('SELECT * FROM patients WHERE cin = $1', [cin]);
+
+
+if (emailQuery.rows.length > 0) {
+  return res.status(400).json({ message: "Email already in use" });
+}
+
+if (cinQuery.rows.length > 0) {
+  return res.status(400).json({ message: "CIN already in use" });
+}
       const medcinQuery = await pool.query(
         `INSERT INTO medcins (email, mot_de_passe, role, nom, prenom, cin, telephone, adresse, specialite)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -106,7 +108,7 @@ const modifyInformation = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
+
 //const deleteAccount = (req, res) => {
    // const userId = parseInt(req.params.id);
    // const userIndex = users.findIndex(user => user.id === userId);
@@ -116,7 +118,6 @@ const modifyInformation = async (req, res) => {
     //users.splice(userIndex, 1);
     //res.status(200).json({ message: "Account deleted successfully" });
 //}
-=======
 /* const deleteAccount = (req, res) => {
     const userId = parseInt(req.params.id);
     const userIndex = users.findIndex(user => user.id === userId);
@@ -125,10 +126,9 @@ const modifyInformation = async (req, res) => {
     }
     users.splice(userIndex, 1);
     res.status(200).json({ message: "Account deleted successfully" });
-*/}
+*/
 
 
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {

@@ -51,9 +51,5 @@ const getALLconsultation = async (req, res) => {
 }
 
 module.exports = {
-<<<<<<< HEAD
-=======
-    //getConsultation,
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
     getALLconsultation
 };

@@ -1,9 +1,10 @@
-const pool = require('../config/db'); 
+const pool = require('../../config/db'); 
 
 const AddConsultation = async (req, res) => {
-    const {id_user, date,time,rapport} = req.body;
+    const {id_user} = req.params;
+    const {date,heure,rapport} = req.body;
 
-    if (!id_user || !date || !time || !rapport) {
+    if (!id_user || !date || !heure || !rapport) {
         return res.status(400).json({ message: "All fields are required" });
     }
     try {
@@ -13,9 +14,9 @@ const AddConsultation = async (req, res) => {
         }
 
         const result = await pool.query(
-            `INSERT INTO consultations (id_user, date, time, rapport)
+            `INSERT INTO consultations (id_user, date, heure, rapport)
              VALUES ($1, $2, $3, $4) RETURNING *`,
-            [id_user, date, time, rapport]
+            [id_user, date, heure, rapport]
         );
 
         res.status(201).json(result.rows[0]);
@@ -95,7 +96,7 @@ const updateConsultation = async (req, res) => {
 
         const result = await pool.query(
             `UPDATE consultations 
-             SET date = $1, time = $2, rapport = $3
+             SET date = $1, heure = $2, rapport = $3
              WHERE id_user = $4 AND id_consultation = $5 RETURNING *`,
             [date, time, rapport, id_user, id_consultation]
         );

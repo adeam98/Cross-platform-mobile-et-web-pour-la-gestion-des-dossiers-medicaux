@@ -1,11 +1,11 @@
-const pool = require('../config/db'); 
+const pool = require('../../config/db'); 
 
 const AddAnalyse = async (req, res) => {
    const {idc}= req.params;
    const {id_analyse,result,date_exam}=req.body;
 
    try {
-    const check = await pool.query('SELECT *FROM centres_analyses WHERE id_user=$1',[idc]);
+    const check = await pool.query('SELECT * FROM centres_analyses WHERE id_user=$1',[idc]);
 
     if(check.rows.length==0)
     {
@@ -22,11 +22,7 @@ const AddAnalyse = async (req, res) => {
    }
 };
 
-<<<<<<< HEAD
-const getAnalyseById = async (req , res) => {
-=======
 /*const getAnalyseById = async (req, res) => {
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
     const {id_user,id_analyse} = req.params;
     if (!id_user || !id_analyse) {
         return res.status(400).json({ message: "All fields are required" });

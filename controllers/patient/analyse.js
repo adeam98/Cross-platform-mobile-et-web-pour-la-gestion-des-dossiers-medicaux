@@ -75,13 +75,6 @@ const getAnalyseByEtat = async (req, res) => {
 
 
 module.exports = {
-<<<<<<< HEAD
-    getAnalyse,
-    getALLAnalyse,
     getAnalyseByEtat
 }
-=======
-    //getAnalyse,
-    getALLAnalyse
-}
->>>>>>> f2723cf90180971392ddadadeb267444bda532b0
+    

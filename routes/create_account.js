@@ -5,7 +5,7 @@ const router = express.Router();
 
 const {createAccount,modifyInformation,login} = require('../controllers/auto/account');
 
-router.post('/create', createAccount);
+router.post('/register', createAccount);
 
 router.put('/modify/:id', modifyInformation);
  

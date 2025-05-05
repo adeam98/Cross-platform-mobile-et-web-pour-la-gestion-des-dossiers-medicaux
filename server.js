@@ -29,6 +29,22 @@ app.use('/api/patient', consultationRoutes);
 const analyseRoutes = require('./routes/patient/analyse');
 app.use('/api/patient', analyseRoutes); 
 
+const rechercher = require('./routes/medcin/rechercher');
+app.use('/api/medcin', rechercher); 
+
+
+const medcinRoutes = require('./routes/medcin/maladie');
+app.use('/api/medcin', medcinRoutes);
+
+const rdvmedin = require('./routes/medcin/RDV');
+app.use('/api/medcin', rdvmedin);
+
+const medciament = require('./routes/medcin/medicament');
+app.use('/api/medcin', medciament);
+const consultation = require('./routes/medcin/consultation');
+app.use('/api/medcin', consultation);
+const analyse = require('./routes/medcin/analyse');
+app.use('/api/medcin', analyse);
 app.listen(PORT, () => {
   console.log(`✅ Backend is running on http://localhost:${PORT}`);
 });

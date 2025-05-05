@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getmedicament, getMedicamentById, createMedicament, updateMedicament, deleteMedicament } = require('../controllers/medcin/medicament');
-router.get('/medicament', getmedicament);
-router.get('/medicament/:id', getMedicamentById);
-router.post('/medicament', createMedicament);
-router.put('/medicament/:id', updateMedicament);
-router.delete('/medicament/:id', deleteMedicament);
+const { getAllmedicament, addmedicament, updatemedicament, deletemedicament } = require('../../controllers/medcin/medicament');
+router.get('/medicament/:id_user', getAllmedicament);
+router.post('/add/medicament/:id_user', addmedicament);
+router.put('/medicament/update/:id_user/:id_medicament', updatemedicament);
+router.delete('/medicament/delete/:id_user/:id_medicament', deletemedicament);
 module.exports = router;

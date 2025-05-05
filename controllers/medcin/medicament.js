@@ -1,4 +1,4 @@
-const pool = require('../config/db'); 
+const pool = require('../../config/db'); 
 
 /*const getmedicament = async (req, res) => {
     const {id_user, id_medicament} = req.params;
@@ -93,7 +93,7 @@ const deletemedicament = async (req, res) => {
 }
 const addmedicament = async (req, res) => {
    const { id_user } = req.params;
-    const { nom, description } = req.body;
+    const { nom, description,frequence } = req.body;
     if (!id_user || !nom || !description) {
         return res.status(400).json({ message: "All fields are required" });
     }
@@ -109,7 +109,7 @@ const addmedicament = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        await pool.query('INSERT INTO medicaments (id_user, nom, description) VALUES ($1, $2, $3)', [id_user, nom, description]);
+        await pool.query('INSERT INTO medicaments (nom, frequence, description, id_user) VALUES ($1, $2, $3, $4)', [nom, frequence, description, id_user]);
 
         res.status(201).json({ message: "Medicament added successfully" });
     } catch (error) {
@@ -118,22 +118,22 @@ const addmedicament = async (req, res) => {
     }
 }
 const getAllmedicament = async (req, res) => {
-    const {idu}=req.params;
+    const {id_user}=req.params;
 
     try{
 
-        const result = await pool.query('SELECT *FROM patients WHERE id_user=$1',[idu]);
+        const result = await pool.query('SELECT * FROM patients WHERE id_user=$1',[id_user]);
         if(result.rows.length==0)
         {
             return res.status(400).json({message:"user not found"});
         }
 
-            const resu=await pool.query('SELECT *FROM medicaments where id_user=$1',[idu]);
-            if(res.rows.length==0)
+            const resu=await pool.query('SELECT * FROM medicaments where id_user=$1',[id_user]);
+            if(resu.rows.length==0)
             {
-                res.status(400).json({message:"no medicaments available"});
+                return res.status(400).json({message:"no medicaments available"});
             }
-            res.status(200).json(resu);
+            res.status(200).json(resu.rows);
     }
     catch(err){
         console.error("Error getting all medicaments:", err);
@@ -141,9 +141,9 @@ const getAllmedicament = async (req, res) => {
     }
 }
 module.exports = {
-    //getmedicament,
+     addmedicament,
     updatemedicament,
     deletemedicament,
-    addmedicament,
+   
     getAllmedicament
 }

@@ -30,6 +30,5 @@ const getAllRDV = (req, res) => {
 }*/
 
 module.exports = {
-    getAllRDV,
-    //getRDVById
+    getAllRDV
 };
