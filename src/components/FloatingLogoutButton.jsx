@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LogOut } from "lucide-react"; // or any other icon lib you use
+import { LogOut } from "lucide-react"; 
 
 export default function FloatingLogoutButton() {
   const navigate = useNavigate();
@@ -17,11 +17,9 @@ export default function FloatingLogoutButton() {
     localStorage.removeItem("userRole");
   
     navigate("/login");
-    window.location.reload(); // ensures ProtectedRoute re-checks the token
+    window.location.reload();
   };
   
-  
-
   return (
     <div style={styles.container}>
       <button onClick={handleLogout} style={styles.button} title="Se déconnecter">
