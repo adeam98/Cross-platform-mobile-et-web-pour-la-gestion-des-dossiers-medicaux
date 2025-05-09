@@ -31,8 +31,7 @@ app.use('/api/patient', analyseRoutes);
 
 const rechercher = require('./routes/medcin/rechercher');
 app.use('/api/medcin', rechercher); 
-
-
+app.use('/api/centre',rechercher);
 const medcinRoutes = require('./routes/medcin/maladie');
 app.use('/api/medcin', medcinRoutes);
 
@@ -43,8 +42,13 @@ const medciament = require('./routes/medcin/medicament');
 app.use('/api/medcin', medciament);
 const consultation = require('./routes/medcin/consultation');
 app.use('/api/medcin', consultation);
+
+
 const analyse = require('./routes/medcin/analyse');
 app.use('/api/medcin', analyse);
+
+const analysecentre= require('./routes/centre_analyse/analyse');
+app.use('api/centre',analysecentre);
 app.listen(PORT, () => {
   console.log(`✅ Backend is running on http://localhost:${PORT}`);
 });

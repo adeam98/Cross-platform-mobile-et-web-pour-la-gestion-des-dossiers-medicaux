@@ -2,7 +2,7 @@ const pool = require('../../config/db');
 
 const AddAnalyse = async (req, res) => {
    const {idc}= req.params;
-   const {id_analyse,result,date_exam}=req.body;
+   const {cin,result,date_exam}=req.body;
 
    try {
     const check = await pool.query('SELECT * FROM centres_analyses WHERE id_user=$1',[idc]);
@@ -11,7 +11,12 @@ const AddAnalyse = async (req, res) => {
     {
        return  res.status(404).json({message: 'user not found'});
     }
-    const me =check.nom;
+    const check2 = await pool.query('SELECT *FROM patients WHERE cin=$1',[cin]);
+    if(check2.rows.length==0)
+        {
+            return  res.status(404).json({message: 'patients not found'});
+        } 
+    const me = check.rows[0];
      await pool.query('INSERT INTO analyses(resultat,date_examen,nom_centre_analyse,etat) VALUES ($1,$2,$3,1) WHERE id_analyse= $4',[result,date_exam,me.nom,id_analyse])
      res.status(200).json({message:'analyse add successfully'});
    }
@@ -144,5 +149,5 @@ const AddAnalyse = async (req, res) => {
     }
 }*/
 
-module.exports = { AddAnalyse /* getAnalyseById, getAllAnalyse, getAnalyseByEtat, updateAnalyse */ }
+module.exports = { AddAnalyse }
 

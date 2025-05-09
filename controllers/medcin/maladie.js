@@ -49,8 +49,12 @@ const getMaladies = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const result = await pool.query('SELECT * FROM maladies WHERE id_user = $1', [id_user]);
-        res.status(200).json(result.rows);
+        const result = await pool.query(`
+            SELECT id_maladie AS id, nom, description
+            FROM maladies
+            WHERE id_user = $1
+          `, [id_user]);       
+         res.status(200).json(result.rows);
     } catch (error) {
         console.error("Error getting maladies:", error);
         res.status(500).json({ message: "Server error", error });

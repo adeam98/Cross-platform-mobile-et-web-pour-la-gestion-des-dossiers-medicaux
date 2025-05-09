@@ -5,6 +5,6 @@ const {getMaladies, addmaladie, updateMaladie, deleteMaladie} = require('../../c
 router.get('/all/:id_user', getMaladies);
 router.post('/add/maladie/:id_user', addmaladie);
 router.put('/maladie/update/:id_user', updateMaladie);
-router.delete('/maladie/delete/:id_user', deleteMaladie);
+router.delete('/maladie/delete/:id_user/:id_maladie', deleteMaladie);
     
 module.exports = router;
