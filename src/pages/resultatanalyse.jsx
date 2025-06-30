@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Calendar, Archive } from 'lucide-react';
-import { getanalyser } from '../services/medcinservice';
+import { getanalyser,getanalysepdf } from '../services/medcinservice';
 
 export default function ResultatsAnalysePage() {
   const [resultats, setResultats] = useState([]);
@@ -25,8 +25,9 @@ export default function ResultatsAnalysePage() {
     })();
   }, []);
 
-  const handleView = (url) => {
-    window.open(url, '_blank');
+  const handleView = async (url) => {
+    const lol = await getanalysepdf(url);
+    window.open(lol, '_blank');
   };
 
   return (
@@ -52,7 +53,7 @@ export default function ResultatsAnalysePage() {
             <button
               type="button"
               style={styles.viewButton}
-              onClick={() => handleView(resu.pdfUrl)}
+              onClick={() => handleView(resu.resultat)}
             >
               Voir le fichier
             </button>
