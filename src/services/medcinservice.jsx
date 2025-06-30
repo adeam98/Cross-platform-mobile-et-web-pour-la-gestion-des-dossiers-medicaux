@@ -62,3 +62,6 @@ export const addanalyse = async ({ nom, description,id_user }) => {
         description
     }); 
 }
+export const getanalysepdf =async(filename) => {
+   return  `${AUTH_API_URL}${filename}`;
+}
