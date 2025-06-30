@@ -12,11 +12,17 @@ export const registerUser = async (userdata) => {
 export const Searchpatient= async(cin) => {  
     return await axios.post(`${CENTRE_API_URL}/rechercher`,{cin});   
 }
-export const addAnalyse =async({idc,result,dateexam,cin})=>
-{ 
-    return await axios.post(`${CENTRE_API_URL}/add/analyse/${idc}`,{
-        result ,
-        dateexam,
-        cin
-    });
-}
+export const addAnalyse = async ({ id_user, formData }) => {
+  try {
+    const response = await axios.post(
+      `${CENTRE_API_URL}/addAnalyse/${id_user}`,
+      formData, // Send FormData containing the file and other data
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Error uploading analysis:", err);
+    throw err;
+  }
+};
+
+
