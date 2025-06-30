@@ -1,82 +1,83 @@
-// src/screens/add/analyse.jsx
-'use client';
-
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addAnalyse } from '../services/centreservice';
+import { addAnalyse } from '../services/centreservice'; // Make sure the service is correct
 import { motion } from 'framer-motion';
 import { AiOutlineCloudUpload } from 'react-icons/ai';
 
 export default function AddAnalyseCentre() {
+  const [analyseId, setAnalyseId] = useState('');
   const [cin, setCin] = useState('');
   const [dateExamen, setDateExamen] = useState('');
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const navigate = useNavigate();
 
-  const onDragOver = useCallback(e => {
-    e.preventDefault();
-    setDragging(true);
-  }, []);
-  const onDragLeave = useCallback(e => {
-    e.preventDefault();
-    setDragging(false);
-  }, []);
+  const onDragOver = useCallback(e => { e.preventDefault(); setDragging(true); }, []);
+  const onDragLeave = useCallback(e => { e.preventDefault(); setDragging(false); }, []);
   const onDrop = useCallback(e => {
     e.preventDefault();
     setDragging(false);
-    if (e.dataTransfer.files?.length) {
-      setFile(e.dataTransfer.files[0]);
-    }
+    if (e.dataTransfer.files?.length) setFile(e.dataTransfer.files[0]);
   }, []);
 
   const handleFileSelect = e => {
-    if (e.target.files?.length) setFile(e.target.files[0]);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      const validTypes = ['application/pdf', 'image/png', 'image/jpeg'];
+      if (!validTypes.includes(selectedFile.type)) {
+        alert('❌ Invalid file type. Only PDF and image files are allowed.');
+        return;
+      }
+      setFile(selectedFile);
+    }
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!cin.trim() || !dateExamen || !file) {
-      alert('❌ Veuillez remplir tous les champs.');
+
+    if (!analyseId.trim() || !cin.trim() || !dateExamen || !file) {
+      alert('❌ Please fill in all fields.');
       return;
     }
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64Result = reader.result;
-      const idc = localStorage.getItem('centreId');
-      try {
-        const response = await addAnalyse({ idc, result: base64Result, dateexam: dateExamen, cin });
-        if (response.status === 200) {
-          alert('✅ Analyse ajoutée avec succès');
-          navigate('/acceuil');
-        } else {
-          alert('❌ Erreur lors de l’ajout de l’analyse');
-        }
-      } catch (err) {
-        console.error(err);
-        alert('❌ Erreur serveur, veuillez réessayer.');
+
+    const id_user = localStorage.getItem('userId');
+    const formData = new FormData();
+    formData.append('id_analyse', analyseId);
+    formData.append('cin', cin);
+    formData.append('date_exam', dateExamen);
+    formData.append('result', file); // Make sure this matches what the backend expects
+
+    try {
+      const response = await addAnalyse({ id_user, formData });
+
+      if (response.message === 'Analyse added successfully!') {
+        alert(' Analysis added successfully');
+        navigate('/acceuil');
+      } else {
+        alert(' Error while adding the analysis');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Error:', err);
+      alert(' Server error, please try again.');
+    }
   };
 
   return (
     <div style={styles.container}>
-      <motion.form
-        style={styles.form}
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <motion.h2
-          style={styles.title}
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-        >
-          Ajouter une Analyse
+      <motion.form style={styles.form} onSubmit={handleSubmit} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        <motion.h2 style={styles.title} initial={{ scale: 0.8 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 20 }}>
+          Ajouter un Résultat d'Analyse
         </motion.h2>
+
+        <motion.input
+          type="number"
+          name="analyseId"
+          placeholder="ID de l'analyse"
+          value={analyseId}
+          onChange={e => setAnalyseId(e.target.value)}
+          style={styles.input}
+          required
+        />
 
         <motion.input
           type="text"
@@ -85,8 +86,6 @@ export default function AddAnalyseCentre() {
           value={cin}
           onChange={e => setCin(e.target.value)}
           style={styles.input}
-          whileFocus={{ scale: 1.02, borderColor: '#0077cc' }}
-          transition={{ type: 'spring', stiffness: 300 }}
           required
         />
 
@@ -96,49 +95,29 @@ export default function AddAnalyseCentre() {
           value={dateExamen}
           onChange={e => setDateExamen(e.target.value)}
           style={styles.input}
-          whileFocus={{ scale: 1.02, borderColor: '#0077cc' }}
-          transition={{ type: 'spring', stiffness: 300 }}
           required
         />
 
         <motion.div
-          style={{
-            ...styles.dropZone,
-            borderColor: dragging ? '#0077cc' : '#ccc',
-            background: dragging ? '#e6f7ff' : '#f9fafe',
-          }}
+          style={{ ...styles.dropZone, borderColor: dragging ? '#0077cc' : '#ccc', background: dragging ? '#e6f7ff' : '#f9fafe' }}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
           onDrop={onDrop}
-          whileHover={{ scale: 1.03 }}
-          transition={{ duration: 0.2 }}
+          onClick={() => document.getElementById('fileInput').click()}
         >
           {file ? (
             <p style={styles.fileName}>{file.name}</p>
           ) : (
             <>
               <AiOutlineCloudUpload size={48} color={dragging ? '#0077cc' : '#888'} />
-              <p style={styles.dropText}>
-                {dragging ? 'Relâchez le fichier pour déposer' : 'Glissez-déposez votre fichier ici'}
-              </p>
-              <p style={styles.dropSubtext}>(ou cliquez pour choisir)</p>
-              <input
-                type="file"
-                style={styles.fileInput}
-                onChange={handleFileSelect}
-                accept="application/pdf,image/*"
-              />
+              <p style={styles.dropText}>{dragging ? 'Release to drop' : 'Drag and drop file here'}</p>
+              <p style={styles.dropSubtext}>(or click to select)</p>
+              <input type="file" id="fileInput" style={styles.fileInput} onChange={handleFileSelect} accept="application/pdf,image/*" />
             </>
           )}
         </motion.div>
 
-        <motion.button
-          type="submit"
-          style={styles.button}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 12 }}
-        >
+        <motion.button type="submit" style={styles.button} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 400, damping: 12 }}>
           Ajouter
         </motion.button>
       </motion.form>
