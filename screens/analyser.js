@@ -1,20 +1,25 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  Linking,
+  Modal,
   ActivityIndicator,
+  Linking,
+  ScrollView,
 } from 'react-native';
+import PDFView from 'react-native-view-pdf';
 
-import { getAnalyse } from '../services/patientservice'; // Assurez-vous que ce chemin est correct
+import { getAnalyse, getPdfUrl } from '../services/patientservice';
+
 const ResultatAnalyseScreen = () => {
   const [analyses, setAnalyses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showPdf, setShowPdf] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState('');
 
   useFocusEffect(
     useCallback(() => {
@@ -29,96 +34,174 @@ const ResultatAnalyseScreen = () => {
         console.error('Aucun ID utilisateur trouvé');
         return;
       }
+
       const response = await getAnalyse(userId, 1);
-      setAnalyses(response.data);
+
+      const filteredAnalyses = response.data.filter(
+        (analyse) =>
+          analyse.resultat &&
+          analyse.resultat.toLowerCase().endsWith('.pdf') &&
+          analyse.resultat.startsWith('/uploads/')
+      );
+
+      setAnalyses(filteredAnalyses);
     } catch (error) {
       console.error("Erreur lors de la récupération des résultats d'analyses :", error);
     } finally {
       setLoading(false);
     }
   };
-  const openPdf = (url) => {
-    if (url) {
-      Linking.openURL(url);
-    } else {
-      alert('Aucun fichier PDF disponible.');
+
+  const openPdf = (filePath) => {
+    try {
+      console.log('Fichier PDF détecté:', filePath);
+
+      const fullUrl = getPdfUrl(filePath);
+
+      Linking.openURL(fullUrl).catch((err) => {
+        console.error('Erreur ouverture URL:', err);
+        alert("Erreur lors de l'ouverture du fichier.");
+      });
+    } catch (error) {
+      console.error('Erreur ouverture PDF:', error);
+      alert("Erreur lors de l'ouverture du fichier.");
     }
   };
 
+  const closePdf = () => {
+    setShowPdf(false);
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Résultats d'Analyses</Text>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#0cd15a" />
+        <ActivityIndicator size="large" color="#00c853" style={{ marginTop: 80 }} />
       ) : analyses.length === 0 ? (
-        <Text style={styles.noData}>Aucun résultat d'analyse disponible.</Text>
+        <Text style={styles.noData}>Aucun fichier PDF disponible.</Text>
       ) : (
-        analyses.map((analyse) => (
-          <View key={analyse.id} style={styles.card}>
-            <Text style={styles.label}>📅 Date :</Text>
-            <Text style={styles.value}>{analyse.date}</Text>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 20 }} // optional padding
+          showsVerticalScrollIndicator={false} // optional style
+        >
+          {analyses.map((analyse) => (
+            <View key={analyse.id_analyse} style={styles.card}>
+              <Text style={styles.label}>
+                📅 Date : {new Date(analyse.date_examen).toLocaleDateString('fr-FR')}
+              </Text>
+              <Text style={styles.label}>🧪 Titre : {analyse.nom}</Text>
 
-            <Text style={styles.label}>🧪 Titre :</Text>
-            <Text style={styles.value}>{analyse.titre}</Text>
-
-            <TouchableOpacity style={styles.pdfButton} onPress={() => openPdf(analyse.pdfUrl)}>
-              <Text style={styles.pdfButtonText}>📄 Voir le fichier PDF</Text>
-            </TouchableOpacity>
-          </View>
-        ))
+              <TouchableOpacity
+                style={styles.pdfButton}
+                onPress={() => openPdf(analyse.resultat)}
+                activeOpacity={0.8}>
+                <Text style={styles.pdfButtonText}>📄 Voir le fichier PDF</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </ScrollView>
       )}
-    </ScrollView>
+
+      {/* PDF Modal remains unchanged */}
+      <Modal visible={showPdf} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={closePdf}>
+              <Text style={styles.closeButtonText}>❌ Fermer</Text>
+            </TouchableOpacity>
+            <PDFView
+              style={{ flex: 1 }}
+              resource={pdfUrl}
+              resourceType="url"
+              onError={(error) => {
+                console.log('Erreur PDFView:', error);
+                alert("Impossible d'afficher le fichier PDF.");
+              }}
+            />
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0fdf4',
-    padding: 16,
+    backgroundColor: '#e8f5e9',
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '900',
     textAlign: 'center',
-    marginBottom: 24,
-    color: 'black',
+    marginBottom: 30,
+    color: '#00796b',
+    letterSpacing: 1,
   },
   card: {
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: '#ffffff',
+    padding: 24,
+    marginBottom: 20,
+    borderRadius: 20,
+    shadowColor: '#00c853',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+    elevation: 8,
   },
   label: {
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  value: {
-    marginBottom: 8,
-    color: '#555',
+    fontWeight: '700',
+    color: '#004d40',
+    fontSize: 16,
+    marginBottom: 10,
   },
   pdfButton: {
-    marginTop: 10,
-    backgroundColor: '#0cd15a',
-    paddingVertical: 10,
-    borderRadius: 8,
+    backgroundColor: '#00c853',
+    paddingVertical: 14,
+    borderRadius: 14,
+    shadowColor: '#00c853',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 6,
   },
   pdfButtonText: {
     textAlign: 'center',
-    color: '#fff',
-    fontWeight: 'bold',
+    color: '#ffffff',
+    fontWeight: '800',
+    fontSize: 17,
   },
   noData: {
+    marginTop: 80,
     textAlign: 'center',
     fontStyle: 'italic',
-    color: '#888',
+    color: '#6a994e',
+    fontSize: 18,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    width: '90%',
+    height: '80%',
+    borderRadius: 10,
+  },
+  closeButton: {
+    backgroundColor: '#00796b',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 
